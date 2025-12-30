@@ -5,7 +5,7 @@ inp_y = float(input("Enter y (end result): "))
 
 x = torch.tensor(inp_x) #input value
 y = torch.tensor(inp_y) #pre determined result (only used for training purpose)
-lr = 0.001
+lr = 0.01
 w = torch.tensor(1.0, requires_grad=True) #weight
 
 epoch = 0
