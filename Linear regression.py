@@ -30,3 +30,4 @@ for epoch in range(1000):
 
 print("Final weight:", w.item())
 print("Final bias:", b.item())
+ 
