@@ -1,52 +1,78 @@
-#import frameworks
+"""Custom Linear Regression Model using PyTorch."""
+
 import torch
 import torch.nn as nn
 
-x = torch.tensor([[1],[2],[3],[4]], dtype=torch.float32)
-y = torch.tensor([[2],[4],[6],[8]], dtype=torch.float32)
+
+# Data preparation
+x = torch.tensor([[1], [2], [3], [4]], dtype=torch.float32)
+y = torch.tensor([[2], [4], [6], [8]], dtype=torch.float32)
 
 n_samples, n_features = x.shape
 
 input_size = n_features
 output_size = n_features
 
-test = torch.tensor([5], dtype= torch.float32)#test tensor
+# Test tensor for prediction
+test = torch.tensor([5], dtype=torch.float32)
 
-# model = nn.Linear(input_size, output_size) - this can also be used but the class defined below is custom model
 
-class LinearRegression(nn.Module): #custom Linear Regression model
-    def __init__(self, input_dim, output_dim):
+class LinearRegression(nn.Module):
+    """Custom Linear Regression model."""
+
+    def __init__(self, input_dim: int, output_dim: int) -> None:
+        """
+        Initialize the Linear Regression model.
+
+        Args:
+            input_dim: Input dimension
+            output_dim: Output dimension
+        """
         super(LinearRegression, self).__init__()
-        #define layers
         self.lin = nn.Linear(input_dim, output_dim)
-        
-    def forward(self,x):
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Forward pass of the model.
+
+        Args:
+            x: Input tensor
+
+        Returns:
+            Output tensor
+        """
         return self.lin(x)
-    
+
+
+# Model initialization
 model = LinearRegression(input_size, output_size)
-print(f"Prediction before training f(test) = {model(test).item():.3f}")
+print(f"Prediction before training: f(5) = {model(test).item():.3f}")
 
-lr = 0.1
-limit = 300
-loss = nn.MSELoss() #manual loss calculation can also be used
-optimizer = torch.optim.SGD(model.parameters(), lr = lr) #manual optimizer can also be used
+# Training configuration
+learning_rate = 0.1
+epochs = 300
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
+# Training loop
+for epoch in range(epochs + 1):
+    # Forward pass
+    predictions = model(x)
 
-for epoch in range(limit+1):
-    
-    pred = model(x)
-    
-    l = loss(y, pred)
-    
-    l.backward()
-    
-    optimizer.step() #optimizer functions
-    
+    # Calculate loss
+    loss = loss_fn(y, predictions)
+
+    # Backward pass
+    loss.backward()
+
+    # Update weights
+    optimizer.step()
     optimizer.zero_grad()
-    
-    
-    if epoch % 10 == 0:
-        [w,b] = model.parameters()
-        print(f'epoch {epoch}: w = {w[0][0].item(): .3f} loss = {l: .8f}')
 
-print(f"Prediction after training f(5) = {model(test).item():.3f}")
+    # Log progress
+    if epoch % 10 == 0:
+        weight, bias = model.parameters()
+        print(f"Epoch {epoch:3d}: weight = {weight[0][0].item():7.3f}, loss = {loss.item():.8f}")
+
+# Final prediction
+print(f"Prediction after training: f(5) = {model(test).item():.3f}")
