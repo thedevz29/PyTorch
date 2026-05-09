@@ -40,10 +40,10 @@ class LogisticRegression(nn.Module):
 # running an instance
 model = LogisticRegression(n_features)
 
-lr = 0.01
+lr = 0.1
 loss = nn.BCEWithLogitsLoss()  # numerically stable; includes sigmoid internally
-optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-epochs = 1000
+optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+epochs = 2500
 
 # training loop
 for epoch in range(epochs):
